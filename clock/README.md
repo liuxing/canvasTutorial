@@ -11,8 +11,9 @@
 我们已经看见了这个钟，现在我们开始吧！！！
 
 **这个大金表的关键自在于将时间值转为旋转角度（以弧度计）以及三角函数**
-演示地址:[http://htmlpreview.github.io/?https://github.com/ogilhinn/canvasTutorial/blob/master/clock.html](http://htmlpreview.github.io/?https://github.com/ogilhinn/canvasTutorial/blob/master/clock.html)
-GitHub地址：[https://github.com/ogilhinn/canvasTutorial](https://github.com/ogilhinn/canvasTutorial)
+
+- 演示地址:[http://htmlpreview.github.io/?https://github.com/ogilhinn/canvasTutorial/blob/master/clock.html](http://htmlpreview.github.io/?https://github.com/ogilhinn/canvasTutorial/blob/master/clock.html)
+- GitHub地址：[https://github.com/ogilhinn/canvasTutorial](https://github.com/ogilhinn/canvasTutorial)
 
 ### 1. 基本HTML结构
 
