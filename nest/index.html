@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CANVAS NEST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body,
+        canvas {
+            height: 100%;
+            width: 100%;
+            vertical-align: middle;
+            background-color: #f7fafc;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    // 创建一个对象
+    class Circle {
+        constructor(x, y) {
+            this.x = x  // x坐标
+            this.y = y  // y坐标
+            this.r = Math.random() * 10 // 随机半径
+            this._mx = (Math.random()*2)-1 // 移动距离
+            this._my = (Math.random()*2)-1
+        }
+
+        drawCircle(ctx) { // 画圆
+            ctx.beginPath()
+            ctx.arc(this.x, this.y, this.r, 0, 360)
+            ctx.closePath()
+            ctx.fillStyle = 'rgba(204, 204, 204, 0.2)'
+            ctx.fill()
+        }
+
+        drawLine(ctx, _circle) { // 画直线
+            let dx = this.x - _circle.x
+            let dy = this.y - _circle.y
+            let d = Math.sqrt(dx * dx + dy * dy)
+            if (d < 150) {
+                ctx.beginPath()
+                ctx.moveTo(this.x, this.y)   //起始点
+                ctx.lineTo(_circle.x, _circle.y)   //终点
+                ctx.closePath()
+                ctx.strokeStyle = 'rgba(204, 204, 204, 0.1)'
+                ctx.stroke()
+            }
+        }
+
+        move(w, h) { // 圆圈移动，边界判定
+            this._mx = (this.x < w && this.x > 0) ? this._mx : (-this._mx)
+            this._my = (this.y < h && this.y > 0) ? this._my : (-this._my)
+            this.x += this._mx / 2
+            this.y += this._my / 2
+        }
+    }
+
+
+    //鼠标点画圆闪烁变动
+    class CurrentCirle extends Circle {
+        constructor(x, y) {
+            super(x, y)
+        }
+        drawCircle(ctx) {
+            ctx.beginPath()
+            this.r = (this.r < 14 && this.r > 1) ? this.r + (Math.random() * 2 - 1) : 2
+            ctx.arc(this.x, this.y, this.r, 0, 360)
+            ctx.closePath()
+            ctx.fillStyle = 'rgba(0,0,0,' + (parseInt(Math.random() * 100) / 100) + ')'
+            ctx.fillStyle = 'rgba(255, 77, 54, 0.6)'
+            ctx.fill()
+        }
+    }
+
+    let canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        w = canvas.width = canvas.offsetWidth,
+        h = canvas.height = canvas.offsetHeight,
+        circles = [], // 存圆
+        current_circle = new CurrentCirle(0, 0)
+
+    // requestAnimationFrame不需要使用者指定循环间隔时间，
+    // 浏览器会基于当前页面是否可见、CPU的负荷情况等来自行决定最佳的帧速率，
+    // 从而更合理地使用CPU
+    window.requestAnimationFrame = window.requestAnimationFrame
+        || window.mozRequestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.msRequestAnimationFrame;
+
+    let draw = function () {
+        ctx.clearRect(0, 0, w, h)
+        for (let i = 0; i < circles.length; i++) {
+            circles[i].move(w, h)
+            circles[i].drawCircle(ctx)
+            for (let j = i + 1; j < circles.length; j++) {
+                circles[i].drawLine(ctx, circles[j])
+            }
+        }
+        if (current_circle.x) {
+            current_circle.drawCircle(ctx)
+            for (let k = 1; k < circles.length; k++) {
+                current_circle.drawLine(ctx, circles[k])
+            }
+        }
+        requestAnimationFrame(draw)
+    }
+
+    let init = function (num) {
+        for (let i = 0; i < num; i++) {
+            circles.push(new Circle(Math.random() * w, Math.random() * h))
+        }
+        draw()
+    }
+
+    window.addEventListener('load', init(90))
+    window.onmousemove = function (e) {
+        e = e || window.event
+        current_circle.x = e.clientX
+        current_circle.y = e.clientY
+    }
+    window.onmouseout = function () {
+        current_circle.x = null
+        current_circle.y = null
+    }
+</script>
+</body>
+</html>
